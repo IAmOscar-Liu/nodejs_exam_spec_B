@@ -75,7 +75,8 @@ export async function listServices({
   const offset = (page - 1) * limit;
   const totalResult = await db
     .select({ total: count() })
-    .from(schema.appointmentServiceTable);
+    .from(schema.appointmentServiceTable)
+    .where(eq(schema.appointmentServiceTable.isRemove, false));
 
   const total = totalResult[0].total;
   const totalPages = Math.ceil(total / limit);
@@ -84,6 +85,7 @@ export async function listServices({
     offset,
     limit,
     orderBy: (services, { desc }) => [desc(services.createdAt)],
+    where: eq(schema.appointmentServiceTable.isRemove, false),
   });
 
   return {
